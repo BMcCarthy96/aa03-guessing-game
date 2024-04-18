@@ -50,7 +50,7 @@ function askRange(min, max) {
 
 function askLimit() {
     rl.question("Enter a maximum number of attempts: ", (num) => {
-        num = Number(numAttempts);
+        numAttempts = Number(num);
         askRange();
         askGuess();
     });
