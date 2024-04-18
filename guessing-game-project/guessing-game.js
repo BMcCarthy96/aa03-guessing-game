@@ -4,16 +4,8 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-function askGuess() {
-    rl.question("Enter a guess: ", (answer) => {
-        if (checkGuess(answer) === randomInRange) {
-            console.log("You win!");
-            rl.close();
-        } else if (checkGuess(answer) !== randomInRange) {
-            askGuess();
-        }
-    });
-}
+let secretNumber;
+let numAttempts = Number(askLimit());
 
 function randomInRange(min, max) {
     min = Number(min);
@@ -23,24 +15,49 @@ function randomInRange(min, max) {
     return secretNumber;
 }
 
+function askGuess() {
+    rl.question("Enter a guess: ", (answer) => {
+        answer = Number(answer);
+        checkGuess(answer);
+        console.log("Guesses remaining: ", (numAttempts -= 1));
+
+        if (numAttempts === 0) {
+            console.log("You Lose");
+            rl.close();
+        }
+
+        if (answer !== secretNumber && numAttempts !== 0) {
+            askGuess();
+            // console.log(numAttempts--);
+        } else if (answer === secretNumber) {
+            console.log("You win!");
+            rl.close();
+        }
+    });
+}
+
 function askRange(min, max) {
     rl.question("Enter a minimum number: ", (min) => {
         rl.question("Enter a maximum number: ", (max) => {
             console.log(
                 `I'm thinking of a number between ${min} and ${max}...`
             );
-            min = Number(min);
-            max = Number(max);
             secretNumber = randomInRange(min, max);
             askGuess();
         });
     });
 }
 
+function askLimit() {
+    rl.question("Enter a maximum number of attempts: ", (num) => {
+        num = Number(numAttempts);
+        askRange();
+        askGuess();
+    });
+}
+
 function checkGuess(num) {
-    if (num !== Number) {
-        return Number(num);
-    }
+    num = Number(num);
 
     if (num === secretNumber) {
         console.log("Correct!");
@@ -55,5 +72,6 @@ function checkGuess(num) {
 }
 
 // console.log(randomInRange(1, 3));
-askRange();
+console.log(askLimit());
+// askLimit();
 // console.log(askRange());
